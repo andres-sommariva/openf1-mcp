@@ -1,16 +1,28 @@
-import { createServer } from '@modelcontextprotocol/sdk';
-import { getRaceSchedule } from './tools/schedule';
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { getRaceSchedule } from "./tools/schedule";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+
+// Create MCP server instance
+const server = new McpServer({
+  name: "OpenF1 MCP Server",
+  version: "0.1.0",
+});
+
+// Register tools
+server.registerTool(
+  getRaceSchedule.name,
+  getRaceSchedule.config,
+  getRaceSchedule.execute
+);
 
 async function main() {
   try {
-    const server = createServer({
-      tools: [getRaceSchedule],
-      port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
-    });
-    await server.start();
-    console.log('MCP Server running on port', server.options.port);
+    console.error("Starting MCP server...");
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    console.error("MCP Server running on stdio");
   } catch (err) {
-    console.error('Failed to start MCP server:', err);
+    console.error("Failed to start MCP server:", err);
     process.exit(1);
   }
 }

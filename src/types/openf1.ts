@@ -1,18 +1,22 @@
 // TypeScript types/interfaces for OpenF1 data
 
 export interface OpenF1Session {
-  session_key: number;
-  session_name: string;
-  session_type: string;
-  session_start_utc: string;
-  session_end_utc: string;
-  circuit_key: number;
-  meeting_key: number;
   year: number;
-  location: string;
+  meeting_key: number;
+  session_key: number;
+  session_type: string;
+  session_name: string;
   country_key: number;
   country_code: string;
-  gmt_offset: number;
+  country_name: string;
+  location: string;
+  circuit_key: number;
+  circuit_short_name: string;
+  date_start: string;
+  date_end: string;
+  gmt_offset: string;
 }
 
-export type OpenF1Schedule = OpenF1Session[];
+export type OpenF1Schedule = {
+  sessions: OpenF1Session[];
+};

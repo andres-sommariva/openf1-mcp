@@ -1,46 +1,56 @@
-import { defineTool } from '@modelcontextprotocol/sdk';
-import { fetchRaceSchedule } from '../clients/openf1';
-import { OpenF1Schedule } from '../types/openf1';
+import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { fetchRaceSchedule } from "../clients/openf1";
+import { z } from "zod";
 
-export const getRaceSchedule = defineTool({
-  name: 'getRaceSchedule',
-  description: 'Retrieve the F1 race schedule (sessions) for a given year, or all available years if not specified.',
-  inputSchema: {
-    type: 'object',
-    properties: {
-      year: {
-        type: 'number',
-        description: 'Year of the F1 season (optional)'
-      }
+type ToolDefinition = {
+  name: string;
+  config: {
+    description: string;
+    inputSchema: any;
+    outputSchema: any;
+  };
+  execute: (input: any) => Promise<CallToolResult>;
+};
+
+export const getRaceSchedule: ToolDefinition = {
+  name: "getRaceSchedule",
+  config: {
+    description:
+      "Retrieve the F1 race schedule (sessions) for a given year, or all available years if not specified.",
+    inputSchema: {
+      year: z.number().optional().describe("Year of the F1 season (optional)"),
     },
-    required: [],
-    additionalProperties: false
+    outputSchema: {
+      sessions: z.array(
+        z.object({
+          year: z.number(),
+          meeting_key: z.number(),
+          session_key: z.number(),
+          session_type: z.string(),
+          session_name: z.string(),
+          country_key: z.number(),
+          country_code: z.string(),
+          country_name: z.string(),
+          location: z.string(),
+          circuit_key: z.number(),
+          circuit_short_name: z.string(),
+          date_start: z.string(),
+          date_end: z.string(),
+          gmt_offset: z.string(),
+        })
+      ),
+    },
   },
-  outputSchema: {
-    type: 'array',
-    items: {
-      type: 'object',
-      properties: {
-        session_key: { type: 'number' },
-        session_name: { type: 'string' },
-        session_type: { type: 'string' },
-        session_start_utc: { type: 'string' },
-        session_end_utc: { type: 'string' },
-        circuit_key: { type: 'number' },
-        meeting_key: { type: 'number' },
-        year: { type: 'number' },
-        location: { type: 'string' },
-        country_key: { type: 'number' },
-        country_code: { type: 'string' },
-        gmt_offset: { type: 'number' }
-      },
-      required: [
-        'session_key','session_name','session_type','session_start_utc','session_end_utc','circuit_key','meeting_key','year','location','country_key','country_code','gmt_offset'
+  execute: async (input: any): Promise<CallToolResult> => {
+    const output: any = await fetchRaceSchedule(input.year);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(output, null, 2),
+        },
       ],
-      additionalProperties: false
-    }
+      structuredContent: output,
+    };
   },
-  execute: async (input: { year?: number }): Promise<OpenF1Schedule> => {
-    return await fetchRaceSchedule(input.year);
-  }
-});
+};
