@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { OpenF1Schedule, OpenF1Session } from '../types/openf1';
+import { OpenF1Schedule, OpenF1Session, OpenF1SessionResult, OpenF1SessionResults } from '../types/openf1';
 
 const OPENF1_BASE_URL = 'https://api.openf1.org/v1';
 
@@ -32,5 +32,30 @@ export async function fetchRaceSchedule({
   // The API returns an array of sessions, filter for race sessions if needed
   return {
     sessions: response.data as OpenF1Session[],
+  };
+}
+
+/**
+ * Fetches the race results from OpenF1.
+ * @param {Object} params - The parameters for the request.
+ * @param {number} params.session_key - The session key to fetch results for
+ * @param {number} params.driver_number - Optional driver number to filter results
+ */
+export async function fetchRaceResults({
+  session_key,
+  driver_number,
+}: {
+  session_key: number;
+  driver_number?: number;
+}): Promise<OpenF1SessionResults> {
+  const params: Record<string, any> = {};
+  if (session_key) params.session_key = session_key;
+  if (driver_number) params.driver_number = driver_number;
+
+  const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, { params });
+  // The API returns an array of session results
+  console.warn(response.data);
+  return {
+    results: response.data as OpenF1SessionResult[],
   };
 }

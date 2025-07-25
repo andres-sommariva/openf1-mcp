@@ -20,3 +20,21 @@ export interface OpenF1Session {
 export type OpenF1Schedule = {
   sessions: OpenF1Session[];
 };
+
+export interface OpenF1SessionResult {
+  dnf: boolean;
+  dns: boolean;
+  dsq: boolean;
+  driver_number: number;
+  duration: number | number[] | null;
+  gap_to_leader: number | number[] | string | null;
+  number_of_laps: number | null;
+  meeting_key: number;
+  position: number | null;
+  points?: number;
+  session_key: number;
+}
+
+export type OpenF1SessionResults = {
+  results: OpenF1SessionResult[];
+};

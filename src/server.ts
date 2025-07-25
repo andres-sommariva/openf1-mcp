@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getRaceSchedule } from "./tools/schedule";
+import { getRaceResults, getRaceSchedule } from "./tools/schedule";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 // Create MCP server instance
@@ -9,11 +9,13 @@ const server = new McpServer({
 });
 
 // Register tools
-server.registerTool(
-  getRaceSchedule.name,
-  getRaceSchedule.config,
-  getRaceSchedule.execute
-);
+[ getRaceResults, getRaceSchedule ].forEach(tool => {
+  server.registerTool(
+    tool.name,
+    tool.config,
+    tool.execute
+  );
+});
 
 async function main() {
   try {
