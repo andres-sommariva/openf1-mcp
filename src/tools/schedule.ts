@@ -1,11 +1,11 @@
 import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import {
-  fetchRaceSchedule,
-  fetchRaceResults,
-  fetchMeetings,
-} from "../clients/openf1";
 import { z } from "zod";
 import { ToolDefinition } from "../types/shared";
+import {
+  fetchMeetings,
+  fetchSessions,
+  fetchSessionResults,
+} from "../clients/openf1";
 
 // get-meetings tool definition
 export const getMeetings: ToolDefinition = {
@@ -95,9 +95,9 @@ export const getMeetings: ToolDefinition = {
   },
 };
 
-// get-race-schedule tool definition
-export const getRaceSchedule: ToolDefinition = {
-  name: "get-race-schedule",
+// get-sessions tool definition
+export const getSessions: ToolDefinition = {
+  name: "get-sessions",
   config: {
     description: `Retrieve the F1 race schedule (sessions) for a given year, or all available years if not specified. 
       Optionally filter by:
@@ -116,7 +116,7 @@ export const getRaceSchedule: ToolDefinition = {
       country_name: z
         .string()
         .optional()
-        .describe("Country name where the event takes place (optional)"),
+        .describe("Country name where the session takes place (optional)"),
       session_type: z
         .enum(["Practice", "Qualifying", "Race"])
         .optional()
@@ -206,7 +206,7 @@ export const getRaceSchedule: ToolDefinition = {
     },
   },
   execute: async (input: any): Promise<CallToolResult> => {
-    const output: any = await fetchRaceSchedule(input);
+    const output: any = await fetchSessions(input);
     return {
       content: [
         {
@@ -219,9 +219,9 @@ export const getRaceSchedule: ToolDefinition = {
   },
 };
 
-// get-race-results tool definition
-export const getRaceResults: ToolDefinition = {
-  name: "get-race-results",
+// get-session-results tool definition
+export const getSessionResults: ToolDefinition = {
+  name: "get-session-results",
   config: {
     description: `Retrieve the results for a given F1 session, identified by session_key. 
     Results include position, driver, time, laps, and status (dnf, dns, dsq).`,
@@ -292,7 +292,7 @@ export const getRaceResults: ToolDefinition = {
     },
   },
   execute: async (input: any): Promise<CallToolResult> => {
-    const output: any = await fetchRaceResults(input);
+    const output: any = await fetchSessionResults(input);
     return {
       content: [
         {

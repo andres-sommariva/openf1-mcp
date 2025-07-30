@@ -36,7 +36,7 @@ export interface OpenF1Session {
   gmt_offset: string;
 }
 
-export type OpenF1Schedule = {
+export type OpenF1Sessions = {
   sessions: OpenF1Session[];
 };
 

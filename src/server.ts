@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getMeetings, getRaceResults, getRaceSchedule } from "./tools/schedule";
+import { getMeetings, getSessions, getSessionResults } from "./tools/schedule";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 // Create MCP server instance
@@ -9,10 +9,10 @@ const server = new McpServer(
     version: "0.1.0",
   },
   {
-    instructions: `This MCP server provides access to F1 race schedule and results.
+    instructions: `This MCP server provides access to F1 race schedule (sessions) and results (session-results).
       Use the get-meetings tool to retrieve a list of meetings (Grand Prix or testing weekends).
-      Use the get-race-schedule tool to retrieve a list of sessions for a given meeting.
-      Use the get-race-results tool to retrieve the results for a given session.
+      Use the get-sessions tool to retrieve a list of sessions for a given meeting.
+      Use the get-session-results tool to retrieve the results for a given session.
       
       Example:
       
@@ -21,20 +21,25 @@ const server = new McpServer(
       - get-meetings for a given "year" and "country_name" (e.g. 2024, "United States")
       - get-meetings for a given "year", "country_name" and "circuit_short_name" (e.g. 2024, "United States", "Sakhir")
       
-      Using the get-race-schedule tool:
-      - get-race-schedule for a given "year" and "meeting_key" (e.g. 2024, 1)
-      - get-race-schedule for a given "year", "meeting_key" and "session_type" (e.g. 2024, 1, "Practice")
-      - get-race-schedule for a given "year", "meeting_key", "session_type" and "session_name" (e.g. 2024, 1, "Practice", "Practice 1")
+      Using the get-sessions tool:
+      - get-sessions for a given "year" and "meeting_key" (e.g. 2024, 1)
+      - get-sessions for a given "year", "meeting_key" and "session_type" (e.g. 2024, 1, "Practice")
+      - get-sessions for a given "year", "meeting_key", "session_type" and "session_name" (e.g. 2024, 1, "Practice", "Practice 1")
       
-      Using the get-race-results tool:
-      - get-race-results for a given "session_key" (e.g. 1)
-      - get-race-results for a given "session_key" and "driver_number" (e.g. 1, 1)
+      Using the get-session-results tool:
+      - get-session-results for a given "session_key" (e.g. 1)
+      - get-session-results for a given "session_key" and "driver_number" (e.g. 1, 1)
+
+      Logical Model:
+      - meetings: meetings are identified by a "meeting_key". You can get all sessions for a race weekend by using the "meeting_key".
+      - sessions: sessions are identified by a "session_key". You can get all results for a session by using the "session_key".
+      - session-results: you can get results for a session by using the "session_key", or all the meetings results by using the "meeting_key".
       `,
   }
 );
 
 // Register tools
-[getMeetings, getRaceSchedule, getRaceResults].forEach((tool) => {
+[getMeetings, getSessions, getSessionResults].forEach((tool) => {
   server.registerTool(tool.name, tool.config, tool.execute);
 });
 

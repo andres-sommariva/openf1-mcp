@@ -1,7 +1,14 @@
-import axios from 'axios';
-import { OpenF1Meeting, OpenF1Meetings, OpenF1Schedule, OpenF1Session, OpenF1SessionResult, OpenF1SessionResults } from '../types/openf1';
+import axios from "axios";
+import {
+  OpenF1Meeting,
+  OpenF1Meetings,
+  OpenF1Session,
+  OpenF1Sessions,
+  OpenF1SessionResult,
+  OpenF1SessionResults,
+} from "../types/openf1";
 
-const OPENF1_BASE_URL = 'https://api.openf1.org/v1';
+const OPENF1_BASE_URL = "https://api.openf1.org/v1";
 
 /**
  * Fetches meetings (Grand Prix or testing weekends) from OpenF1.
@@ -31,15 +38,15 @@ export async function fetchMeetings({
 }
 
 /**
- * Fetches the race schedule from OpenF1.
+ * Fetches sessions (Practice, Qualifying, Race, etc.) from OpenF1.
  * @param {Object} params - The parameters for the request.
  * @param {number} params.year - Optional year to filter schedule
- * @param {number} params.meeting_key - Optional meeting key to filter schedule
- * @param {string} params.country_name - Optional country name to filter schedule
- * @param {string} params.session_type - Optional session type to filter schedule (e.g. "Practice", "Qualifying", "Race")
- * @param {string} params.session_name - Optional session name to filter schedule (e.g. "Practice 1", "Practice 2", "Practice 3", "Sprint Qualifying", "Sprint", "Qualifying", "Race")
+ * @param {number} params.meeting_key - Optional meeting key to filter sessions
+ * @param {string} params.country_name - Optional country name to filter sessions
+ * @param {string} params.session_type - Optional session type to filter sessions (e.g. "Practice", "Qualifying", "Race")
+ * @param {string} params.session_name - Optional session name to filter sessions (e.g. "Practice 1", "Practice 2", "Practice 3", "Sprint Qualifying", "Sprint", "Qualifying", "Race")
  */
-export async function fetchRaceSchedule({
+export async function fetchSessions({
   year,
   meeting_key,
   country_name,
@@ -51,7 +58,7 @@ export async function fetchRaceSchedule({
   country_name?: string;
   session_type?: string;
   session_name?: string;
-}): Promise<OpenF1Schedule> {
+}): Promise<OpenF1Sessions> {
   const params: Record<string, any> = {};
   if (year) params.year = year;
   if (meeting_key) params.meeting_key = meeting_key;
@@ -67,12 +74,12 @@ export async function fetchRaceSchedule({
 }
 
 /**
- * Fetches the race results from OpenF1.
+ * Fetches the session results from OpenF1.
  * @param {Object} params - The parameters for the request.
  * @param {number} params.session_key - The session key to fetch results for
  * @param {number} params.driver_number - Optional driver number to filter results
  */
-export async function fetchRaceResults({
+export async function fetchSessionResults({
   session_key,
   driver_number,
 }: {
@@ -83,7 +90,9 @@ export async function fetchRaceResults({
   if (session_key) params.session_key = session_key;
   if (driver_number) params.driver_number = driver_number;
 
-  const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, { params });
+  const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, {
+    params,
+  });
   // The API returns an array of session results
   return {
     results: response.data as OpenF1SessionResult[],
