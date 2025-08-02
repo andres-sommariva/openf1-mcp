@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getMeetings, getSessions, getSessionResults } from "./tools/schedule";
-import { getLaps } from "./tools/telemetry";
+import { getLaps } from "./tools/laps";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 // Create MCP server instance
