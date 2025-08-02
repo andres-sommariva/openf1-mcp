@@ -1,5 +1,7 @@
 import axios from "axios";
 import {
+  OpenF1Lap,
+  OpenF1Laps,
   OpenF1Meeting,
   OpenF1Meetings,
   OpenF1Session,
@@ -86,15 +88,40 @@ export async function fetchSessionResults({
   session_key: number;
   driver_number?: number;
 }): Promise<OpenF1SessionResults> {
-  const params: Record<string, any> = {};
-  if (session_key) params.session_key = session_key;
+  const params: Record<string, any> = { session_key };
   if (driver_number) params.driver_number = driver_number;
 
-  const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, {
-    params,
-  });
+  const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, { params });
   // The API returns an array of session results
   return {
     results: response.data as OpenF1SessionResult[],
+  };
+}
+
+/**
+ * Fetches lap data from OpenF1.
+ * @param {Object} params - The parameters for the request.
+ * @param {number} params.session_key - The session key to fetch laps for (required)
+ * @param {number} [params.driver_number] - Optional driver number to filter laps
+ * @param {number} [params.lap_number] - Optional lap number to filter specific lap
+ * @returns {Promise<OpenF1Laps>} The lap data
+ */
+export async function fetchLaps({
+  session_key,
+  driver_number,
+  lap_number,
+}: {
+  session_key: number;
+  driver_number?: number;
+  lap_number?: number;
+}): Promise<OpenF1Laps> {
+  const params: Record<string, any> = { session_key };
+  if (driver_number) params.driver_number = driver_number;
+  if (lap_number) params.lap_number = lap_number;
+
+  const response = await axios.get(`${OPENF1_BASE_URL}/laps`, { params });
+  // The API returns an array of laps
+  return {
+    laps: response.data as OpenF1Lap[],
   };
 }

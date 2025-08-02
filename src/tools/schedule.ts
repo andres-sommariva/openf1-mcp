@@ -1,11 +1,11 @@
 import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import { ToolDefinition } from "../types/shared";
 import {
   fetchMeetings,
-  fetchSessions,
   fetchSessionResults,
+  fetchSessions,
 } from "../clients/openf1";
+import { ToolDefinition } from "../types/shared";
 
 // get-meetings tool definition
 export const getMeetings: ToolDefinition = {

@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getMeetings, getSessions, getSessionResults } from "./tools/schedule";
+import { getLaps } from "./tools/telemetry";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 // Create MCP server instance
@@ -30,16 +31,22 @@ const server = new McpServer(
       - get-session-results for a given "session_key" (e.g. 1)
       - get-session-results for a given "session_key" and "driver_number" (e.g. 1, 1)
 
+      Using the get-laps tool:
+      - get-laps for a given "session_key" (e.g. 1)
+      - get-laps for a given "session_key" and "driver_number" (e.g. 1, 1)
+      - get-laps for a given "session_key", "driver_number" and "lap_number" (e.g. 1, 1, 1)
+      
       Logical Model:
       - meetings: meetings are identified by a "meeting_key". You can get all sessions for a race weekend by using the "meeting_key".
       - sessions: sessions are identified by a "session_key". You can get all results for a session by using the "session_key".
       - session-results: you can get results for a session by using the "session_key", or all the meetings results by using the "meeting_key".
+      - laps: laps are identified by a "session_key". You can get all laps for a session by using the "session_key".
       `,
   }
 );
 
 // Register tools
-[getMeetings, getSessions, getSessionResults].forEach((tool) => {
+[getMeetings, getSessions, getSessionResults, getLaps].forEach((tool) => {
   server.registerTool(tool.name, tool.config, tool.execute);
 });
 
