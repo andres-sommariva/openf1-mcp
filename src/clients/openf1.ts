@@ -1,5 +1,7 @@
 import axios from "axios";
 import {
+  OpenF1Driver,
+  OpenF1Drivers,
   OpenF1Lap,
   OpenF1Laps,
   OpenF1Meeting,
@@ -123,5 +125,37 @@ export async function fetchLaps({
   // The API returns an array of laps
   return {
     laps: response.data as OpenF1Lap[],
+  };
+}
+
+/**
+ * Fetches driver information from OpenF1.
+ * @param {Object} params - The parameters for the request.
+ * @param {number} [params.session_key] - Optional session key to filter drivers by session
+ * @param {number} [params.meeting_key] - Optional meeting key to filter drivers by meeting
+ * @returns {Promise<OpenF1Drivers>} The driver data
+ */
+export async function fetchDrivers({
+  session_key,
+  meeting_key,
+  driver_number,
+}: {
+  session_key?: number;
+  meeting_key?: number;
+  driver_number?: number;
+} = {}): Promise<OpenF1Drivers> {
+  const params: Record<string, any> = {};
+  if (session_key) params.session_key = session_key;
+  if (meeting_key) params.meeting_key = meeting_key;
+  if (driver_number) params.driver_number = driver_number;
+
+  if (Object.keys(params).length === 0) {
+    throw new Error("At least one input parameter is required (session_key, meeting_key or driver_number)");
+  }
+
+  const response = await axios.get(`${OPENF1_BASE_URL}/drivers`, { params });
+  // The API returns an array of drivers
+  return {
+    drivers: response.data as OpenF1Driver[],
   };
 }
