@@ -23,6 +23,7 @@ npx @modelcontextprotocol/inspector node ./dist/server.js
   - `tools/` — MCP tool definitions
   - `clients/` — OpenF1 API client logic
   - `types/` — TypeScript types/interfaces
+  - `cache/` — In-memory cache logic
   - `utils/` — Utility functions
 
 ## Acknowledgments

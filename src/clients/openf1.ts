@@ -1,4 +1,5 @@
 import axios from "axios";
+import { memoryCache, generateCacheKey } from "../cache/memoryCache";
 import {
   OpenF1Driver,
   OpenF1Drivers,
@@ -13,6 +14,7 @@ import {
 } from "../types/openf1";
 
 const OPENF1_BASE_URL = "https://api.openf1.org/v1";
+const DEFAULT_TTL_MS = Number(process.env.OPENF1_CACHE_TTL_MS || 60 * 60 * 1000); // 1 hour
 
 /**
  * Fetches meetings (Grand Prix or testing weekends) from OpenF1.
@@ -34,10 +36,15 @@ export async function fetchMeetings({
   if (year) params.year = year;
   if (country_name) params.country_name = country_name;
   if (circuit_short_name) params.circuit_short_name = circuit_short_name;
-  const response = await axios.get(`${OPENF1_BASE_URL}/meetings`, { params });
+
+  const cacheKey = generateCacheKey("meetings", params);
+  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+    const response = await axios.get(`${OPENF1_BASE_URL}/meetings`, { params });
+    return response.data;
+  });
   // The API returns an array of meetings
   return {
-    meetings: response.data as OpenF1Meeting[],
+    meetings: data as OpenF1Meeting[],
   };
 }
 
@@ -70,10 +77,14 @@ export async function fetchSessions({
   if (session_type) params.session_type = session_type;
   if (session_name) params.session_name = session_name;
 
-  const response = await axios.get(`${OPENF1_BASE_URL}/sessions`, { params });
+  const cacheKey = generateCacheKey("sessions", params);
+  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+    const response = await axios.get(`${OPENF1_BASE_URL}/sessions`, { params });
+    return response.data;
+  });
   // The API returns an array of sessions
   return {
-    sessions: response.data as OpenF1Session[],
+    sessions: data as OpenF1Session[],
   };
 }
 
@@ -93,10 +104,14 @@ export async function fetchSessionResults({
   const params: Record<string, any> = { session_key };
   if (driver_number) params.driver_number = driver_number;
 
-  const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, { params });
+  const cacheKey = generateCacheKey("session_result", params);
+  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+    const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, { params });
+    return response.data;
+  });
   // The API returns an array of session results
   return {
-    results: response.data as OpenF1SessionResult[],
+    results: data as OpenF1SessionResult[],
   };
 }
 
@@ -121,10 +136,14 @@ export async function fetchLaps({
   if (driver_number) params.driver_number = driver_number;
   if (lap_number) params.lap_number = lap_number;
 
-  const response = await axios.get(`${OPENF1_BASE_URL}/laps`, { params });
+  const cacheKey = generateCacheKey("laps", params);
+  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+    const response = await axios.get(`${OPENF1_BASE_URL}/laps`, { params });
+    return response.data;
+  });
   // The API returns an array of laps
   return {
-    laps: response.data as OpenF1Lap[],
+    laps: data as OpenF1Lap[],
   };
 }
 
@@ -153,9 +172,13 @@ export async function fetchDrivers({
     throw new Error("At least one input parameter is required (session_key, meeting_key or driver_number)");
   }
 
-  const response = await axios.get(`${OPENF1_BASE_URL}/drivers`, { params });
+  const cacheKey = generateCacheKey("drivers", params);
+  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+    const response = await axios.get(`${OPENF1_BASE_URL}/drivers`, { params });
+    return response.data;
+  });
   // The API returns an array of drivers
   return {
-    drivers: response.data as OpenF1Driver[],
+    drivers: data as OpenF1Driver[],
   };
 }
