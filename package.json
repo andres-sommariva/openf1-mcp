@@ -11,6 +11,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "latest",
     "axios": "latest",
+    "good.db": "^2.4.6",
     "zod": "^3.25.76"
   },
   "devDependencies": {

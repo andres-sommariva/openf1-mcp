@@ -1,5 +1,5 @@
 import axios from "axios";
-import { memoryCache, generateCacheKey } from "../cache/memoryCache";
+import { dbCache as cache } from "../cache/dbCache";
 import {
   OpenF1Driver,
   OpenF1Drivers,
@@ -8,10 +8,11 @@ import {
   OpenF1Meeting,
   OpenF1Meetings,
   OpenF1Session,
-  OpenF1Sessions,
   OpenF1SessionResult,
   OpenF1SessionResults,
+  OpenF1Sessions,
 } from "../types/openf1";
+import { generateCacheKey } from "../utils/cache";
 
 const OPENF1_BASE_URL = "https://api.openf1.org/v1";
 const DEFAULT_TTL_MS = Number(process.env.OPENF1_CACHE_TTL_MS || 60 * 60 * 1000); // 1 hour
@@ -38,7 +39,7 @@ export async function fetchMeetings({
   if (circuit_short_name) params.circuit_short_name = circuit_short_name;
 
   const cacheKey = generateCacheKey("meetings", params);
-  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+  const data = await cache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
     const response = await axios.get(`${OPENF1_BASE_URL}/meetings`, { params });
     return response.data;
   });
@@ -78,7 +79,7 @@ export async function fetchSessions({
   if (session_name) params.session_name = session_name;
 
   const cacheKey = generateCacheKey("sessions", params);
-  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+  const data = await cache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
     const response = await axios.get(`${OPENF1_BASE_URL}/sessions`, { params });
     return response.data;
   });
@@ -105,7 +106,7 @@ export async function fetchSessionResults({
   if (driver_number) params.driver_number = driver_number;
 
   const cacheKey = generateCacheKey("session_result", params);
-  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+  const data = await cache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
     const response = await axios.get(`${OPENF1_BASE_URL}/session_result`, { params });
     return response.data;
   });
@@ -137,7 +138,7 @@ export async function fetchLaps({
   if (lap_number) params.lap_number = lap_number;
 
   const cacheKey = generateCacheKey("laps", params);
-  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+  const data = await cache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
     const response = await axios.get(`${OPENF1_BASE_URL}/laps`, { params });
     return response.data;
   });
@@ -173,7 +174,7 @@ export async function fetchDrivers({
   }
 
   const cacheKey = generateCacheKey("drivers", params);
-  const data = await memoryCache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+  const data = await cache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
     const response = await axios.get(`${OPENF1_BASE_URL}/drivers`, { params });
     return response.data;
   });
