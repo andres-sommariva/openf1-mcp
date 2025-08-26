@@ -7,7 +7,7 @@ export interface CacheEntry {
 }
 
 class DbCache {
-  private db = new GoodDB(new JSONDriver({ path: "./db/cache.data.json" }), {
+  private db = new GoodDB(new JSONDriver({ path: "./.db/cache.data.json" }), {
     table: "cache",
     nestedIsEnabled: false,
     cache: {
