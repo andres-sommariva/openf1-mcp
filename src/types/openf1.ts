@@ -81,6 +81,21 @@ export type OpenF1Laps = {
   laps: OpenF1Lap[];
 };
 
+export interface OpenF1Stint {
+  compound: string;
+  driver_number: number;
+  lap_end: number;
+  lap_start: number;
+  meeting_key: number;
+  session_key: number;
+  stint_number: number;
+  tyre_age_at_start: number;
+}
+
+export type OpenF1Stints = {
+  stints: OpenF1Stint[];
+};
+
 export interface OpenF1Driver {
   session_key: number;
   meeting_key: number;

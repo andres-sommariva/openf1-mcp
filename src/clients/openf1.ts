@@ -5,6 +5,8 @@ import {
   OpenF1Drivers,
   OpenF1Lap,
   OpenF1Laps,
+  OpenF1Stint,
+  OpenF1Stints,
   OpenF1Meeting,
   OpenF1Meetings,
   OpenF1Session,
@@ -181,5 +183,36 @@ export async function fetchDrivers({
   // The API returns an array of drivers
   return {
     drivers: data as OpenF1Driver[],
+  };
+}
+
+/**
+ * Fetches stints data from OpenF1.
+ * @param {Object} params - The parameters for the request.
+ * @param {number} params.session_key - The session key to fetch stints for (required)
+ * @param {number} [params.driver_number] - Optional driver number to filter stints
+ * @param {number} [params.stint_number] - Optional stint number to filter a specific stint
+ * @returns {Promise<OpenF1Stints>} The stint data
+ */
+export async function fetchStints({
+  session_key,
+  driver_number,
+  stint_number,
+}: {
+  session_key: number;
+  driver_number?: number;
+  stint_number?: number;
+}): Promise<OpenF1Stints> {
+  const params: Record<string, any> = { session_key };
+  if (driver_number !== undefined) params.driver_number = driver_number;
+  if (stint_number !== undefined) params.stint_number = stint_number;
+
+  const cacheKey = generateCacheKey("stints", params);
+  const data = await cache.getOrSet(cacheKey, DEFAULT_TTL_MS, async () => {
+    const response = await axios.get(`${OPENF1_BASE_URL}/stints`, { params });
+    return response.data;
+  });
+  return {
+    stints: data as OpenF1Stint[],
   };
 }

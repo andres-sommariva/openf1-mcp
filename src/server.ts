@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getMeetings, getSessions, getSessionResults } from "./tools/schedule";
-import { getLaps } from "./tools/laps";
+import { getLaps, getStints } from "./tools/laps";
 import { getDrivers } from "./tools/drivers";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
@@ -57,11 +57,16 @@ const server = new McpServer(
 );
 
 // Register tools
-[getMeetings, getSessions, getSessionResults, getLaps, getDrivers].forEach(
-  (tool) => {
-    server.registerTool(tool.name, tool.config, tool.execute);
-  }
-);
+[
+  getMeetings,
+  getSessions,
+  getSessionResults,
+  getLaps,
+  getStints,
+  getDrivers,
+].forEach((tool) => {
+  server.registerTool(tool.name, tool.config, tool.execute);
+});
 
 async function main() {
   try {
