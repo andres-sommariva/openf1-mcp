@@ -12,6 +12,7 @@
     "@modelcontextprotocol/sdk": "latest",
     "axios": "latest",
     "good.db": "^2.4.6",
+    "mathjs": "^14.6.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
