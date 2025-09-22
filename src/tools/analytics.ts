@@ -42,6 +42,7 @@ export const getDriverSessionAnalytics: ToolDefinition = {
         .describe("Country name where the session takes place (optional)"),
       session_type: z
         .enum(["Practice", "Qualifying", "Race"])
+        .optional()
         .describe(
           'Session type (e.g. "Practice", "Qualifying", "Race") (optional)'
         ),
