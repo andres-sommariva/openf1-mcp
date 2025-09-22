@@ -17,7 +17,7 @@ import {
 import { generateCacheKey } from "../utils/cache";
 
 const OPENF1_BASE_URL = "https://api.openf1.org/v1";
-const DEFAULT_TTL_MS = Number(process.env.OPENF1_CACHE_TTL_MS || 60 * 60 * 1000); // 1 hour
+const DEFAULT_TTL_MS = Number(process.env.OPENF1_CACHE_TTL_MS || 24 * 60 * 60 * 1000); // 24 hours
 
 /**
  * Fetches meetings (Grand Prix or testing weekends) from OpenF1.

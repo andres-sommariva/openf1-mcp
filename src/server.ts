@@ -3,6 +3,7 @@ import { getMeetings, getSessions, getSessionResults } from "./tools/schedule";
 import { getLaps, getStints } from "./tools/laps";
 import { getDrivers } from "./tools/drivers";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { getDriverSessionAnalytics } from "./tools/analytics";
 
 const server_instructions = `
   This MCP server provides access to F1 race schedule (sessions) and results (session-results).
@@ -64,16 +65,17 @@ const server = new McpServer(
   getLaps,
   getStints,
   getDrivers,
+  getDriverSessionAnalytics,
 ].forEach((tool) => {
   server.registerTool(tool.name, tool.config, tool.execute);
 });
 
 async function main() {
   try {
-    console.warn("Starting MCP server...");
+    console.error("Starting MCP server...");
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.warn("MCP Server running on stdio");
+    console.error("MCP Server running on stdio");
   } catch (err) {
     console.error("Failed to start MCP server:", err);
     process.exit(1);
