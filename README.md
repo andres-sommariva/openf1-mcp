@@ -19,12 +19,13 @@ npx @modelcontextprotocol/inspector node ./dist/server.js
 
 ## Project Structure
 - `src/` — Source code
-  - `server.ts` — MCP server entry point
-  - `tools/` — MCP tool definitions
-  - `clients/` — OpenF1 API client logic
-  - `types/` — TypeScript types/interfaces
+  - `analytics/` — Analytics logic
   - `cache/` — In-memory cache logic
+  - `clients/` — OpenF1 API client logic
+  - `tools/` — MCP tool definitions
+  - `types/` — TypeScript types/interfaces
   - `utils/` — Utility functions
+  - `server.ts` — MCP server entry point
 
 ## Acknowledgments
 
